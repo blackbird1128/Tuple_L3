@@ -9,8 +9,10 @@
 namespace t {
 
 
-  template<typename ... Types> struct TupleType;
-  template<typename ... Types> struct TupleSumType;
+  
+ template<typename ... H> struct tuple_type{};
+  template<typename ... H> struct common_tuple;
+
 
   template<class T , class... TypesT>
   class Tuple  {
@@ -58,14 +60,14 @@ namespace t {
       }   
     }
 
-    /**
+   /**
      * Addition between to tuples
      */
-    template <typename U, typename ... TypesU>
-    TupleSumType<TupleType<T,TypesT...>,TupleType<U,TypesU...>> operator+(const Tuple<U,TypesU...>& other) {
-
-      return Tuple<TupleSumType<TupleType<T,TypesT...>,TupleType<U,TypesU...>>>(value + other.value , tail + other.tail);
+    template <typename U,typename ... TypesU>
+    typename common_tuple<tuple_type<T,TypesT...>,tuple_type<U,TypesU...>>::ctdificil operator+(const Tuple<U,TypesU...>& other) const {
+      return Tuple<std::common_type<tuple_type<T,TypesT>,tuple_type<U,TypesU>>...>(value + other.value , tail + other.tail);
     }
+
 
     /**
      * Addition between to tuples - in place
@@ -280,10 +282,12 @@ namespace t {
       return *this;
     }
 
+    
     template <typename Type>
-    Tuple<Type> operator+(const Tuple<Type>& other) {
-      return Tuple<Type>(value + other.value);
+    typename common_tuple<tuple_type<T>,tuple_type<Type>>::ctdificil operator+(const Tuple<Type>& other) const{
+      return Tuple<typename std::common_type<T,Type>::type>(value + other.value);
     }
+
 
     template <typename Type>
     Tuple<Type> operator-(const Tuple<Type>& other) {
@@ -314,17 +318,10 @@ namespace t {
   };
 
 
-  template<typename ... Types>
-  struct TupleType {
-    using type = Tuple<Types...>;
+  template<typename ... H1,typename ... H2>
+  struct common_tuple<tuple_type<H1...>, tuple_type<H2...>>{
+    using ctdificil = Tuple<std::common_type<H1,H2>...>;
   };
-
-
-  template<typename ... TypesLeft,typename ... TypesRight>
-  struct TupleSumType<TupleType<TypesLeft...>, TupleType<TypesRight...>>{
-    using type = typename std::common_type<TupleType<TypesLeft...>,TupleType<TypesRight...>>::type;
-  };
-
 
 }
 
