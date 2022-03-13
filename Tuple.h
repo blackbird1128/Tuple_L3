@@ -12,7 +12,7 @@ namespace t {
   template<class T , class... TypesT>
   class Tuple  {
 
-    template<typename> friend class Tuple;
+    template<typename ...TypesU> friend class Tuple<TypesU...>;
     
 
   private:
@@ -60,10 +60,10 @@ namespace t {
     /**
      * Addition between to tuples
      */
-    template <typename OtherType, typename ... OtherTypes>
-    Tuple<OtherType , OtherTypes...> operator+(const Tuple<OtherType, OtherTypes...>& other) {
-      friend class Tuple<OtherType , OtherTypes...>;
-      return Tuple<OtherType , OtherTypes...>(value + other.value , tail + other.tail);
+    template <typename OtherType1, typename ... OtherTypes1 , typename OtherType2 , typename... OtherTypes2>
+    Tuple<OtherType1 , OtherTypes1...> operator+(const Tuple<OtherType2, OtherTypes2...>& other) {
+
+      return Tuple<OtherType2 , OtherTypes2...>(value + other.value , tail + other.tail);
     }
 
     /**
@@ -212,7 +212,7 @@ namespace t {
   template <typename T>
   class Tuple<T> {
 
-    template<typename> friend class Tuple;
+    template<typename U> friend class Tuple<U>;
 
     public:
 
