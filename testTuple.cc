@@ -155,15 +155,7 @@ TEST(Tuple , PlusDifferentType)
 
 }
 
-
-T
-
-
-
-
-
 // ...
-
 
 TEST(Tuple , makeTupleBase)
 {

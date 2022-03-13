@@ -9,18 +9,19 @@
 namespace t {
 
 
+  template<typename ... Types> struct TupleType;
+  template<typename ... Types> struct TupleSumType;
+
   template<class T , class... TypesT>
   class Tuple  {
 
-    template<typename ...TypesU> friend class Tuple<TypesU...>;
-    
+    template<typename U, typename ...TypesU> friend class Tuple;
 
   private:
 
     Tuple<TypesT...> tail;
 
   public:
-
 
     T value;
     std::size_t sizeTail;
@@ -60,10 +61,10 @@ namespace t {
     /**
      * Addition between to tuples
      */
-    template <typename OtherType1, typename ... OtherTypes1 , typename OtherType2 , typename... OtherTypes2>
-    Tuple<OtherType1 , OtherTypes1...> operator+(const Tuple<OtherType2, OtherTypes2...>& other) {
+    template <typename U, typename ... TypesU>
+    TupleSumType<TupleType<T,TypesT...>,TupleType<U,TypesU...>> operator+(const Tuple<U,TypesU...>& other) {
 
-      return Tuple<OtherType2 , OtherTypes2...>(value + other.value , tail + other.tail);
+      return Tuple<TupleSumType<TupleType<T,TypesT...>,TupleType<U,TypesU...>>>(value + other.value , tail + other.tail);
     }
 
     /**
@@ -212,7 +213,7 @@ namespace t {
   template <typename T>
   class Tuple<T> {
 
-    template<typename U> friend class Tuple<U>;
+    //template<typename U> friend class Tuple;
 
     public:
 
@@ -311,6 +312,19 @@ namespace t {
       T value;
 
   };
+
+
+  template<typename ... Types>
+  struct TupleType {
+    using type = Tuple<Types...>;
+  };
+
+
+  template<typename ... TypesLeft,typename ... TypesRight>
+  struct TupleSumType<TupleType<TypesLeft...>, TupleType<TypesRight...>>{
+    using type = typename std::common_type<TupleType<TypesLeft...>,TupleType<TypesRight...>>::type;
+  };
+
 
 }
 
